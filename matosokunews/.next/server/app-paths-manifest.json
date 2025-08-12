@@ -1,3 +1,5 @@
 {
-  "/auth/signin/page": "app/auth/signin/page.js"
+  "/auth/signin/page": "app/auth/signin/page.js",
+  "/page": "app/page.js",
+  "/api/cron/fetch-articles/route": "app/api/cron/fetch-articles/route.js"
 }

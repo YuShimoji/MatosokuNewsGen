@@ -1,8 +1,148 @@
 # MatoSokuNews プロジェクト概要
 
+MatoSokuNewsは、最新のニュースを自動的に集約し、AIを用いて独自の視点で再構成・配信する次世代のニュースプラットフォームです。
+
+## 主要機能
+
+- **ユーザー認証**: メールアドレス/パスワードおよびGoogle OAuthによる安全なログイン機能を提供します。
+- **AIによる記事自動収集**: RSSフィードから記事を自動収集し、データベースに保存します。
+- **AIによる記事生成**: 収集した記事を基に、AIが要約・タイトル生成・カテゴリ分類などを行います。
+- **記事表示**: AIによって生成された、付加価値の高いニュースコンテンツをユーザーに提供します。
+
+## 実装状況 (2025-08-13 現在)
+
+### ✅ 完了
+- プロジェクトのセットアップ (Next.js, TypeScript, Prisma)
+- 認証システム (NextAuth.js)
+- データベース設計 (Prisma Schema)
+- 記事収集システム (RSSフィード取得、コンテンツ抽出)
+- APIエンドポイント (記事収集用)
+
+### ⏳ 進行中
+- AIによる記事生成機能
+- フロントエンドUI
+- 管理ダッシュボード
+
+### 📅 未着手
+- 定期実行の設定 (Vercel Cron Jobs)
+- パフォーマンス最適化
+- 本番環境デプロイ
+
+## 技術スタック
+
+- **フレームワーク**: Next.js 14 (App Router)
+- **言語**: TypeScript 5.x
+- **データベース**: 
+  - 本番環境: PostgreSQL
+  - 開発環境: SQLite
+- **ORM**: Prisma
+- **認証**: NextAuth.js
+- **AI連携**: OpenAI / Anthropic / Google AI (予定)
+- **コンテンツ取得**: rss-parser, axios, cheerio
+- **スタイリング**: Tailwind CSS
+
 ## プロジェクトの目的
 
 MatoSokuNewsは、AIを活用して複数のニュースソースから情報を収集・分析し、独自の視点を加えたニュース記事を自動生成・配信するプラットフォームです。
+
+## 開発環境のセットアップ
+
+1. リポジトリをクローン
+   ```bash
+   git clone https://github.com/your-username/matosokunews.git
+   cd matosokunews
+   ```
+
+2. 依存関係をインストール
+   ```bash
+   npm install
+   ```
+
+3. 環境変数を設定 (`.env` ファイルを作成)
+   ```env
+   # データベース
+   DATABASE_URL="postgresql://user:password@localhost:5432/matosokunews?schema=public"
+   
+   # 認証
+   NEXTAUTH_SECRET="your-nextauth-secret"
+   NEXTAUTH_URL="http://localhost:3001"
+   
+   # APIキー (後で設定)
+   CRON_SECRET="your-cron-secret"
+   ```
+
+4. データベースマイグレーションを実行
+   ```bash
+   npx prisma migrate dev
+   ```
+
+5. 開発サーバーを起動
+   ```bash
+   npm run dev
+   ```
+
+6. ブラウザで確認
+   - アプリケーション: http://localhost:3001
+   - Prisma Studio: http://localhost:5555
+
+## テスト手順
+
+### 記事収集APIのテスト
+
+1. テストスクリプトを実行
+   ```bash
+   node scripts/test-fetch-articles.js
+   ```
+
+2. または、cURLを使用して直接APIを呼び出す
+   ```bash
+   curl -X GET "http://localhost:3001/api/cron/fetch-articles" \
+     -H "Authorization: Bearer your-cron-secret"
+   ```
+
+### データベースの確認
+
+1. Prisma Studioを起動
+   ```bash
+   npx prisma studio
+   ```
+
+2. ブラウザで http://localhost:5555 にアクセスし、`Article` テーブルを確認
+
+## デプロイ手順
+
+### Vercel へのデプロイ
+
+1. Vercel にプロジェクトをインポート
+2. 環境変数を設定
+3. デプロイを実行
+
+### 定期実行の設定 (Vercel Cron Jobs)
+
+1. Vercel のプロジェクト設定でCronジョブを追加
+2. 以下の設定でスケジュールを設定
+   - Path: `/api/cron/fetch-articles`
+   - Schedule: `0 */6 * * *` (6時間ごと)
+   - Headers: 
+     - `Authorization: Bearer your-cron-secret`
+
+## トラブルシューティング
+
+### 記事が取得できない場合
+- RSSフィードのURLが正しいか確認
+- ネットワーク接続を確認
+- 開発サーバーのログを確認
+
+### 認証エラーが発生する場合
+- `.env` ファイルの `CRON_SECRET` が正しく設定されているか確認
+- ヘッダーに正しい認証トークンが含まれているか確認
+
+## コントリビューション
+
+1. 機能ブランチを作成 (`git checkout -b feature/your-feature`)
+2. 変更をコミット (`git commit -am 'Add some feature'`)
+3. リモートブランチにプッシュ (`git push origin feature/your-feature`)
+4. プルリクエストを作成
 
 ## 主な機能要件
 
